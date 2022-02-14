@@ -9,9 +9,9 @@ contract TasksBS is Blacksmith {
     constructor(
         address _addr,
         uint256 _privateKey,
-        address payable _target
+        address _target
     ) Blacksmith(_addr, _privateKey) {
-        target = _target;
+        target = payable(_target);
     }
 
     function addressUint256BoolMap(address arg0, uint256 arg1) public prank returns (bool) {

@@ -9,9 +9,9 @@ contract BarTokenBS is Blacksmith {
     constructor(
         address _addr,
         uint256 _privateKey,
-        address payable _target
+        address _target
     ) Blacksmith(_addr, _privateKey) {
-        target = _target;
+        target = payable(_target);
     }
 
     function allowance(address owner, address spender) public prank returns (uint256) {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-//*
+
 import "ds-test/test.sol";
 import "./blacksmith/FooToken.bs.sol";
 import "./blacksmith/BarToken.bs.sol";
@@ -38,16 +38,8 @@ contract TokenTest is DSTest {
         returns (User memory)
     {
         Blacksmith base = new Blacksmith(_addr, _privateKey);
-        FooTokenBS _foo = new FooTokenBS(
-            _addr,
-            _privateKey,
-            payable(address(foo))
-        );
-        BarTokenBS _bar = new BarTokenBS(
-            _addr,
-            _privateKey,
-            payable(address(bar))
-        );
+        FooTokenBS _foo = new FooTokenBS(_addr, _privateKey, address(foo));
+        BarTokenBS _bar = new BarTokenBS(_addr, _privateKey, address(bar));
         base.deal(100);
         return User(base.addr(), base, _foo, _bar);
     }
@@ -95,4 +87,3 @@ contract TokenTest is DSTest {
         alice.foo.transferFrom(bob.addr, alice.addr, 20);
     }
 }
-//*/

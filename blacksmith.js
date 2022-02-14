@@ -9,8 +9,8 @@ switch (cmd) {
         console.log('running :: forge build')
         exec('forge build', (err, stdout, stderr) => {
             if (stdout) {
-                const success = stdout.split('\n')[3].indexOf('Compiler run successful') === 0
-                const nochange = stdout.split('\n')[3].indexOf('no files changed') === 0
+                const nochange = stdout.split('\n')[1]?.indexOf('no files changed') === 0
+                const success = stdout.split('\n')[3]?.indexOf('Compiler run successful') === 0
                 if (success || nochange) {
                     console.log('\x1b[32m%s\x1b[0m', "build   :: completed")
                 } else {
@@ -173,9 +173,9 @@ contract ${name}BS is Blacksmith {
     constructor(
         address _addr,
         uint256 _privateKey,
-        address payable _target
+        address _target
     ) Blacksmith(_addr, _privateKey) {
-        target = _target;
+        target = payable(_target);
     }
 
     ${abi.filter(x => x.type === 'function').map(x => createFunction(name, x)).join('\n\n\t')}

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-//*
+
 import "ds-test/test.sol";
 import "./blacksmith/Tasks.bs.sol";
 
@@ -35,11 +35,7 @@ contract TasksTest is DSTest {
         returns (User memory)
     {
         Blacksmith base = new Blacksmith(_addr, _privateKey);
-        TasksBS tasks = new TasksBS(
-            _addr,
-            _privateKey,
-            payable(address(target))
-        );
+        TasksBS tasks = new TasksBS(_addr, _privateKey, address(target));
         base.deal(100);
         return User(base.addr(), base, tasks);
     }
@@ -147,4 +143,3 @@ contract TasksTest is DSTest {
         assert(_structArray[1]._bool);
     }
 }
-//*/
