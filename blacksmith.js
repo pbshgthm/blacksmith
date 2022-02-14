@@ -111,31 +111,35 @@ interface Bsvm {
 contract Blacksmith {
     Bsvm constant bsvm = Bsvm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
-    address public addr;
-    uint256 public privateKey;
+    address _address;
+    uint256 privateKey;
 
     constructor(address _addr, uint256 _privateKey) {
-        addr = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
+        _address = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
         privateKey = _privateKey;
     }
 
     modifier prank() {
-        bsvm.startPrank(addr, addr);
+        bsvm.startPrank(_address, _address);
         _;
     }
 
-    function deal(uint256 _amount) public {
-        bsvm.deal(addr, _amount);
+    function addr() external returns (address) {
+        return _address;
     }
 
-    function call(address _contract, bytes memory _calldata)
+    function deal(uint256 _amount) public {
+        bsvm.deal(_address, _amount);
+    }
+
+    function call(address addr, bytes memory _calldata)
         public
         payable
         prank
         returns (bytes memory)
     {
-        require(addr.balance >= msg.value, "BS ERROR : Insufficient balance");
-        (bool success, bytes memory data) = _contract.call{value: msg.value}(
+        require(_address.balance >= msg.value, "BS ERROR : Insufficient balance");
+        (bool success, bytes memory data) = addr.call{value: msg.value}(
             _calldata
         );
         require(success, "BS ERROR : Call failed");
@@ -145,9 +149,9 @@ contract Blacksmith {
     function sign(bytes32 _digest)
         external
         returns (
-            uint8 v,
-            bytes32 r,
-            bytes32 s
+            uint8,
+            bytes32,
+            bytes32
         )
     {
         require(privateKey != 0, "BS Error : No Private key");
@@ -167,15 +171,22 @@ pragma solidity ^0.8.0;
 import "./Blacksmith.sol";
 import "../../${source.slice(4)}";
 
-contract ${name}BS is Blacksmith {
+contract ${name}BS {
+    Bsvm constant bsvm = Bsvm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+
+    address addr;
+    uint256 privateKey;
     address payable target;
     
-    constructor(
-        address _addr,
-        uint256 _privateKey,
-        address _target
-    ) Blacksmith(_addr, _privateKey) {
+    constructor( address _addr, uint256 _privateKey, address _target) {
+        addr = _privateKey == 0 ? _addr : bsvm.addr(_privateKey);
+        privateKey = _privateKey;
         target = payable(_target);
+    }
+
+    modifier prank() {
+        bsvm.startPrank(addr, addr);
+        _;
     }
 
     ${abi.filter(x => x.type === 'function').map(x => createFunction(name, x)).join('\n\n\t')}
