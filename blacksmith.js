@@ -124,7 +124,7 @@ contract Blacksmith {
         _;
     }
 
-    function addr() external returns (address) {
+    function addr() external view returns (address) {
         return _address;
     }
 
@@ -132,14 +132,14 @@ contract Blacksmith {
         bsvm.deal(_address, _amount);
     }
 
-    function call(address addr, bytes memory _calldata)
+    function call(address _addr, bytes memory _calldata)
         public
         payable
         prank
         returns (bytes memory)
     {
         require(_address.balance >= msg.value, "BS ERROR : Insufficient balance");
-        (bool success, bytes memory data) = addr.call{value: msg.value}(
+        (bool success, bytes memory data) = _addr.call{value: msg.value}(
             _calldata
         );
         require(success, "BS ERROR : Call failed");

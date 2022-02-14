@@ -41,6 +41,7 @@ contract TokenTest is DSTest {
         FooTokenBS _foo = new FooTokenBS(_addr, _privateKey, address(foo));
         BarTokenBS _bar = new BarTokenBS(_addr, _privateKey, address(bar));
         base.deal(100);
+        emit log_address(base.addr());
         return User(base.addr(), base, _foo, _bar);
     }
 
