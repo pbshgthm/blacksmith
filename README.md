@@ -102,7 +102,7 @@ function setUp() public {
     bar = new BarToken();
     alice = createUser(address(0), 111);  // addrss will be 0x052b91ad9732d1bce0ddae15a4545e5c65d02443
     bob = createUser(address(111), 0);  // address will be 0x000000000000000000000000000000000000006f
-    eve = createUser(address(123), 0);  // address will be 0x000000000000000000000000000000000000006f
+    eve = createUser(address(0), 0);  // address will be 0x0000000000000000000000000000000000000000
 }
 ```
 
@@ -115,7 +115,7 @@ function testSomething() public {
     alice.bar.approve(eve.addr, 100);
     eve.transferFrom(bob.addr, eve.addr, 50);
     eve.call{value:10}(alice.ddr, "");
-   (uint8 v, bytes32 r, bytes32 s) = alice.sign("blacksmith");
+    (uint8 v, bytes32 r, bytes32 s) = alice.sign("blacksmith");
 }
 ```
 
