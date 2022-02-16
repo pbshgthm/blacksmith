@@ -1,5 +1,7 @@
 # Blacksmith
 
+Blacksmith is a `User’ contract generator. These user contracts can interface with the test contracts in OOP style and simplify complex boilerplate setup. Blacksmith is particularly build for [Foundry](https://github.com/gakonst/foundry) and takes advantage of the VM cheat codes to create EOA like contracts. It lets you directly start writing tests instead of setting up boilerplate code for interacting with test contracts. 
+
 ## Forging in heat and sweat
 
 Testing smart contracts have been made very easy with Foundry. With blazing speed and fuzzers, it's a no brainer to use it for every smart contract project. It also uses VM cheat codes to change `msg.sender` , `tx.origin` and other EVM properties. The fact that you can write tests using solidity is a huge advantage as it avoids context switching while developing. Although this is clearly a great thing, it also means it's not possible to advantage of testing patterns that exist in high-level libraries directly. 
@@ -132,7 +134,7 @@ node blacksmith.js create #in foundry project's root directly
 
  
 
-This will create `/src/test/blacksmith` directory with user contracts in `[TaretContract].bs.sol`
+This will run `forge build` and then create `/src/test/blacksmith` directory with user contracts in `[TaretContract].bs.sol`
 
 In the `src/test/blacksmith` directory, you’ll find `Blacksmith.sol`. This contract contains the core functions of Blacksmith. It’s constructor takes in an address and a private key. If the private key is zero, then the address of the user contract is set to the address provided. Else the address is computed from the private key.
 
@@ -185,19 +187,16 @@ struct User {
 }
 ```
 
-We can also create a `createUser` function to create users according to our prefrence. We can add ETH to users’s address in this step.
+We can also create a `createUser` function to create users according to our preference. We can add ETH to users’s address in this step.
 
 ```solidity
-function createUser(address _addr, uint256 _privateKey)
-        public
-        returns (User memory)
-    {
-        Blacksmith base = new Blacksmith(_addr, _privateKey);
-        FooTokenBS _foo = new FooTokenBS(_addr, _privateKey, address(foo));
-        BarTokenBS _bar = new BarTokenBS(_addr, _privateKey, address(bar));
-        base.deal(100);
-        return User(base.addr(), base, _foo, _bar);
-    }
+function createUser(address _addr, uint256 _privateKey) public returns (User memory) {
+    Blacksmith base = new Blacksmith(_addr, _privateKey);
+    FooTokenBS _foo = new FooTokenBS(_addr, _privateKey, address(foo));
+    BarTokenBS _bar = new BarTokenBS(_addr, _privateKey, address(bar));
+    base.deal(100);
+    return User(base.addr(), base, _foo, _bar);
+}
 ```
 
 In our `setUp()` function, we can then create user instances.
@@ -222,3 +221,7 @@ function testTransferFrom() public {
     assertEq(foo.balanceOf(alice.addr), 10);
 }
 ```
+
+You can take a look at examples [here](https://github.com/pbshgthm/blacksmith/blob/main/src/test/Token.t.sol) and [here](https://github.com/pbshgthm/blacksmith/blob/main/src/test/Tasks.t.sol). 
+
+## Happy forging!
