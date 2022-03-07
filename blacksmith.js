@@ -42,7 +42,7 @@ function createFunction(name, fn) {
         if (type === 'bytes') return `${type} memory`
         if (type === 'string') return `${type} memory`
         if (type.indexOf('struct ') === 0) return `${type.slice(7)} memory`
-        if (type.indexOf("contract ") === 0 && type.indexOf("]") === type.length - 1)
+        if (type.indexOf("contract ") === 0 && type.indexOf("]") === type.length - 1) return `${type.slice(9)} memory`;
         if (type.indexOf('contract ') === 0) return `${type.slice(9)}`
 
         if (type.indexOf('enum ') === 0) type = type.slice(5)
