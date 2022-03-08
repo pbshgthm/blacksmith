@@ -36,7 +36,7 @@ function getABI({ name, source }) {
     return JSON.parse(fs.readFileSync(path, 'utf8')).abi
 }
 
-function createFunction(abi, name, fn) {
+function createFunction(name, fn) {
 
     function fmtType(type) {
         if (type === 'bytes') return `${type} memory`
@@ -69,12 +69,9 @@ function createFunction(abi, name, fn) {
         return ''
     }
 
-    function fmtReturn(abi, name) {
-        if (fn.outputs.length === 0 && abi.slice(-1)[0].type.indexOf("receive") === 0)
-        return `${name}(payable(target))`;
-        if (fn.outputs.length === 0) return `${name}(target)`;
-        if (abi.slice(-1)[0].type.indexOf("receive") === 0) return `return ${name}(payable(target))`;
-        return `return ${name}(target)`;
+    function fmtReturn() {
+        if (fn.outputs.length === 0) return ''
+        return `return `
     }
 
     function fmtOutput() {
@@ -87,7 +84,7 @@ function createFunction(abi, name, fn) {
     }
 
     return `function ${fn.name}${fmtInput()} public ${fmtPayable()}prank ${fmtOutput()} {
-        ${fmtReturn(abi,name)}.${fn.name}${fmtValue()}${fmtInput(false)};
+        ${fmtReturn()}${name}(target).${fn.name}${fmtValue()}${fmtInput(false)};
     }`
 }
 
@@ -194,7 +191,7 @@ contract ${name}BS {
         _;
     }
 
-    ${abi.filter(x => x.type === 'function').map(x => createFunction(abi, name, x)).join('\n\n\t')}
+    ${abi.filter(x => x.type === 'function').map(x => createFunction(name, x)).join('\n\n\t')}
 
 }
 `
