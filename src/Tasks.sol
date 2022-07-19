@@ -29,7 +29,7 @@ contract Tasks {
 
     function revertCall(bool _bool) public pure {
         if (_bool) {
-            revert("Requested Revet");
+            revert("Requested Revert");
         }
     }
 
